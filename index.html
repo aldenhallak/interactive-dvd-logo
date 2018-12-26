@@ -44,6 +44,9 @@
     var endX, endY;
     var vX, vY;
 
+    //text to give instructions
+    var startText;
+
     var game = new Phaser.Game(config);
 
     function preload ()
@@ -72,25 +75,31 @@ function resize() {
     {
 	resize();
 
-	timedEvent = this.time.addEvent({ delay: 1000, callback: onEvent, callbackScope: this});    
+	//Add Instruction Text
+	startText = this.add.text(16,16, "You can drag the DVD Logo.", {fontSize: '32px', fill: '#fff'});
 
-        logo = this.physics.add.sprite(100, 450, 'dvd');
-
+	//Add the logo
+	logo = this.physics.add.sprite(100, 450, 'dvd');
+	
+	//Make the logo smaller scale
 	logo.scaleX = .25;
 	logo.scaleY = .25;
 
+	//Make the logo bounce off the walls
 	logo.setBounce(1);
-
         logo.setCollideWorldBounds(true);
 
+	//Make the logo draggable
     	logo.setInteractive();
-
 	this.input.setDraggable(logo);
 
 	time = 0;
 
 	//Dragstart,drag,dragend to add velocity.
 	this.input.on('dragstart', function (pointer, gameObject, dragX, dragY){
+
+		//destroy the text on dragging at all 	
+		startText.destroy();
 
 		gameObject.body.velocity.x = 0;
 		gameObject.body.velocity.y = 0;
@@ -101,7 +110,6 @@ function resize() {
 	});
 	this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
 
-			timedEvent.paused = false;
 			startTime = new Date();
 
 	        	gameObject.x = dragX;
@@ -112,13 +120,13 @@ function resize() {
 
 		endTime = new Date();
 
+		//calculating the new velocity
 		var timeDiff = endTime - startTime;
 
 		endX = gameObject.x;
 		endY = gameObject.y;
 		vX = (endX - startX) / timeDiff;
 		vY = (endY-startY) / timeDiff;
-		timedEvent.paused = true;
 
 		gameObject.body.velocity.x = vX * MULTIPLIER;
 		gameObject.body.velocity.y = vY * MULTIPLIER;
