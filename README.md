@@ -1,2 +1,2 @@
 # interactive-dvd-logo
-An interactive DVD Logo made with Phaser
+An interactive HTML5 DVD Logo made with Phaser
